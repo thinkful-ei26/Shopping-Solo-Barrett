@@ -1,11 +1,13 @@
 'use strict';
 
+// module PATTERN
 const STORE = {
   listItems: [{name: 'apples', checked: false},
     {name: 'oranges', checked: false},
     {name: 'milk', checked: true},
     {name: 'bread', checked: false}],
-  hideChecked: false
+  hideChecked: false,
+  searchTerm: null,
 };
 
 function generateItemElement(item, itemIndex, template) {
@@ -38,6 +40,9 @@ function renderShoppingList() {
   let items = STORE.listItems;
   if (STORE.hideChecked) {
     items = STORE.listItems.filter(item => !item.checked);
+  }
+  if (STORE.searchTerm) {
+    items = STORE.listItems.filter(item => STORE.searchTerm === item.name);
   }
   console.log ('`renderShoppingList` ran');
   const shoppingListItemsString = 
@@ -117,6 +122,25 @@ function toggleHideChecked() {
 }
 
 
+function toggleSearchInput(input) {
+  STORE.searchTerm = input;
+}
+
+function handleSearchInput() {
+  $('#js-searchbox-form').submit(function(event) {
+    event.preventDefault;
+    console.log('pass');
+    const searchInput = $('.js-shopping-list-search').val();
+    console.log(searchInput);
+    $('.js-shopping-list-search').val('');
+    toggleSearchInput(searchInput);
+    renderShoppingList();
+    // attach event handler to a button instead of search input, and add filter function 
+    //to render function to filter search results
+  });
+}
+
+
 function handleDisplayCheckBox() {
   $('.checkbox').click(event => {
     console.log('checkbox was clicked');
@@ -125,13 +149,14 @@ function handleDisplayCheckBox() {
   });
 }
 
-
-function handleShoppingList() {
+// main function PATTERN
+function main() {
   renderShoppingList();
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleDisplayCheckBox();
+  handleSearchInput();
 }
 
-$(handleShoppingList);
+$(main);
